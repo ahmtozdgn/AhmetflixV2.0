@@ -11,6 +11,7 @@ namespace Ahmetflix.Models
         public string? ImageUrl { get; set; }
         public string? TrailerUrl { get; set; }
         public DateTime ReleaseDate { get; set; }
+        public string? Season { get; set; }
         public int Duration { get; set; } // in minutes
         public double Rating { get; set; } // 0-10
         public int CategoryId { get; set; }

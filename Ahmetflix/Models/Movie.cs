@@ -17,5 +17,6 @@ namespace Ahmetflix.Models
         public Category? Category { get; set; }
         public List<AppUser> AppUsers { get; set; } = new List<AppUser>();
         public IMDB? IMDB { get; set; }
+        public Address Address { get; internal set; }
     }
 }

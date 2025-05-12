@@ -1,9 +1,23 @@
+using Ahmetflix.Data;
+using Microsoft.EntityFrameworkCore; 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<ApplicationDbContext>(options => // Fix the method name here
+{
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 var app = builder.Build();
+
+if (args.Length == 1 && args[0].ToLower() == "seeddata")
+{
+    //Seed.SeedUsersAndRolesAsync(app);
+    Seed.SeedData(app);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -21,7 +35,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+   name: "default",
+   pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
