@@ -2,7 +2,7 @@
 
 namespace Ahmetflix.Controllers
 {
-    public class SerieController : Controller
+    public class SeriesController : Controller
     {
         public IActionResult Index()
         {
@@ -10,3 +10,4 @@ namespace Ahmetflix.Controllers
         }
     }
 }
+    

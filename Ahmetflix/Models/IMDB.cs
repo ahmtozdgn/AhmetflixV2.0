@@ -1,7 +1,11 @@
-﻿namespace Ahmetflix.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Ahmetflix.Models
 {
     public class IMDB
     {
+
+        [Key]
         public int Id { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }
@@ -11,7 +15,7 @@
         public int Duration { get; set; } // in minutes
         public double Rating { get; set; } // 0-10
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
         public List<AppUser> AppUsers { get; set; } = new List<AppUser>();
     }
 }
