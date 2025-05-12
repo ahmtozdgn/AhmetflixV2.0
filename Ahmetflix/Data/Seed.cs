@@ -28,7 +28,6 @@ namespace Ahmetflix.Data
                             {
 
                                 City = "Los Angeles",
-
                             }
                         },
                         new Movie()
