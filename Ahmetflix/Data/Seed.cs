@@ -1,70 +1,71 @@
-﻿using Ahmetflix.Data.Enum;
-using Ahmetflix.Data;
+﻿using Ahmetflix.Data;
 using Ahmetflix.Models;
-using Microsoft.AspNetCore.Identity;
 
-namespace Ahmetflix.Data
+namespace Ahmetflix.Data.Seed
 {
-    public class Seed
+    public static class SeedData
     {
-        public static void SeedData(IApplicationBuilder applicationBuilder, MovieCategory movieCategory)
+        internal static void SeedDatabase(WebApplication app)
         {
-            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+            using var scope = app.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            // Eğer veritabanında hiç Category yoksa ekle
+            if (!context.Categories.Any())
             {
-                var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-
-                context.Database.EnsureCreated();
-
-                if (!context.Movies.Any())
+                var categories = new List<Category>
                 {
-                    context.Movies.AddRange(new List<Movie>()
-                    {
-                        new Movie()
-                        {
-                            Title = "Inception",
-                            ImageUrl = "https://example.com/inception.jpg",
-                            Description = "A mind-bending thriller by Christopher Nolan.",
-                            Address = new Address()
-                            {
+                    new Category { Name = "Action" },
+                    new Category { Name = "Comedy" },
+                    new Category { Name = "Drama" },
+                    new Category { Name = "Sci-Fi" }
+                };
+                context.Categories.AddRange(categories);
+                context.SaveChanges(); // Kategoriler kaydedildi
+            }
 
-                                City = "Los Angeles",
-                            }
-                        },
-                        new Movie()
-                        {
-                            Title = "The Godfather",
-                            ImageUrl = "https://example.com/godfather.jpg",
-                            Description = "An iconic mafia movie directed by Francis Ford Coppola.",
-                            Address = new Address()
-                            {
+            // Eğer veritabanında hiç Movie yoksa ekle
+            if (!context.Movies.Any())
+            {
+                var firstCategory = context.Categories.First(); // İlk kategoriye bağla
 
-                                City = "New York",
-
-                            }
-                        }
-                    });
-                    context.SaveChanges();
-                }
-
-                if (!context.Categories.Any())
+                var movies = new List<Movie>
                 {
-                    context.Categories.AddRange(new List<Category>()
+                    new Movie
                     {
-                        new Category() { Name = "Drama" },
-                        new Category() { Name = "Science Fiction" },
-                        new Category() { Name = "Action" },
-                        new Category() { Name = "Comedy" }
-                    });
-                    context.SaveChanges();
-                }
+                        Title = "Inception",
+                        Description = "A mind-bending thriller by Christopher Nolan.",
+                        ImageUrl = "https://example.com/inception.jpg",
+                        ReleaseDate = new DateTime(2010, 7, 16),
+                        Duration = 148,
+                        Rating = 8.8,
+                        TrailerUrl = "https://youtube.com/example_trailer",
+                        CategoryId = firstCategory.Id,
+                        Address = new Address { City = "Los Angeles" }
+                    },
+                    new Movie
+                    {
+                        Title = "The Dark Knight",
+                        Description = "Batman faces Joker in Gotham.",
+                        ImageUrl = "https://example.com/darkknight.jpg",
+                        ReleaseDate = new DateTime(2008, 7, 18),
+                        Duration = 152,
+                        Rating = 9.0,
+                        TrailerUrl = "https://youtube.com/darkknight_trailer",
+                        CategoryId = firstCategory.Id,
+                        Address = new Address { City = "Gotham" }
+                    }
+                };
+
+                context.Movies.AddRange(movies);
+                context.SaveChanges(); // Filmler kaydedildi
             }
         }
+    }
+}
 
-        internal static void SeedData(WebApplication app)
-        {
-            throw new NotImplementedException();
-        }
 
+       
         //public static async Task SeedUsersAndRolesAsync(IApplicationBuilder applicationBuilder)
         //{
         //    using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
@@ -95,7 +96,8 @@ namespace Ahmetflix.Data
         //                }
         //            };
         //            await userManager.CreateAsync(newAdminUser, "FilmSite@123");
-        //            await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
+        //            object adminRoleAssignment = await userManager.AddToRoleAsync(newAdminUser,
+        //                                                                          UserRoles.Admin);
         //        }
 
         //        string appUserEmail = "user@filmsite.com";
@@ -120,5 +122,4 @@ namespace Ahmetflix.Data
         //        }
         //    }
         //}
-    }
-}
+    

@@ -1,4 +1,5 @@
 using Ahmetflix.Data;
+using Ahmetflix.Data.Seed;
 using Microsoft.EntityFrameworkCore; 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,8 @@ var app = builder.Build();
 if (args.Length == 1 && args[0].ToLower() == "seeddata")
 {
     //Seed.SeedUsersAndRolesAsync(app);
-    Seed.SeedData(app);
+    SeedData.SeedDatabase(app);
+
 }
 
 // Configure the HTTP request pipeline.
