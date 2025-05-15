@@ -8,11 +8,13 @@ namespace Ahmetflix.Models
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? ImageUrl { get; set; }
-        public string? Description { get; set; }
-        public List<Movie> Movies { get; set; } = new List<Movie>();
-        public List<Series> Series { get; set; } = new List<Series>();
-        public List<AppUser> AppUsers { get; set; } = new List<AppUser>();
-        public List<IMDB> IMDBs { get; set; } = new List<IMDB>();
-        public List<Genre> Genres { get; set; } = new List<Genre>();
+
+        // Navigation Properties
+        public ICollection<Movie>? Movies { get; set; }
+        public ICollection<Series>? Series { get; set; }
+
+        public List<AppUser> AppUsers { get; } = new();
+        public List<IMDB> IMDBs { get; } = new();
+        public List<Genre> Genres { get; } = new();
     }
 }

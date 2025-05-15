@@ -14,10 +14,5 @@ namespace Ahmetflix.Models
         public List<IMDB> IMDBs { get; set; } = new List<IMDB>();
         public List<Category> Categories { get; set; } = new List<Category>();
         public List<Genre> SubGenres { get; set; } = new List<Genre>();
-     
-  
-     
-            
-
     }
 }

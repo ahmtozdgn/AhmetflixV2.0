@@ -4,10 +4,9 @@ namespace Ahmetflix.Controllers
 {
     public class SeriesController : Controller
     {
-        public IActionResult Index()
+        public IActionResult SeriesIndex()
         {
             return View();
         }
     }
 }
-    
