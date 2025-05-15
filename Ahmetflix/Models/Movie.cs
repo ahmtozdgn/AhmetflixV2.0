@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ahmetflix.Models
 {
@@ -60,7 +59,6 @@ namespace Ahmetflix.Models
 
         // Navigation Properties
         public ICollection<Category>? Categories { get; set; }
-        public ICollection<Favorite>? Favorites { get; set; }
         public ICollection<Comment>? Comments { get; set; }
     }
 }

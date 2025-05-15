@@ -1,281 +1,579 @@
-﻿
-<!DOCTYPE html>
-<html lang="en" data-bs-theme="auto">
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Ana Sayfa";
+}
 
-<body>
-    <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0"
-                            class="active" aria-label="Slide 1" aria-current="true"></button> <button type="button"
-                  data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2" class=""></button> <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3" class=""></button>
-                </div>
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <svg aria-hidden="true" class="bd-placeholder-img " height="100%"
-                             preserveAspectRatio="xMidYMid slice" width="100%" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect>
-                        </svg>
-                        <div class="container">
-                            <div class="carousel-caption text-start">
-                                <h1>Example headline.</h1>
-                                <p class="opacity-75">
-                                    Some representative placeholder content for the first slide of the
-                                    carousel.
-                                </p>
-                                <p><a class="btn btn-lg btn-primary" href="#">Sign up today</a></p>
-                            </div>
-                        </div>
+<!-- Hero Section -->
+<div class="hero-section">
+    @if (Model.FeaturedMovies?.Any() == true)
+    {
+        var featured = Model.FeaturedMovies.First();
+        <div class="hero-content" style="background-image: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%), url('@(string.IsNullOrEmpty(featured.BackdropUrl) ? "https://via.placeholder.com/1920x1080" : featured.BackdropUrl)')">
+            <div class="container">
+                <div class="hero-info">
+                    <h1 class="hero-title">@featured.Title</h1>
+                    <div class="hero-meta">
+                        <span class="badge bg-warning text-dark me-2"><i class="bi bi-star-fill"></i> @featured.Rating</span>
+                        <span class="text-light me-2">@featured.ReleaseDate?.Year</span>
+                        <span class="text-light">@featured.GenreName</span>
                     </div>
-                    <div class="carousel-item">
-                        <svg aria-hidden="true" class="bd-placeholder-img " height="100%"
-                             preserveAspectRatio="xMidYMid slice" width="100%" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="100%" height="500%" fill="var(--bs-secondary-color)"></rect>
-                        </svg>
-                        <div class="container">
-                            <div class="carousel-caption">
-                                <h1>Another example headline.</h1>
-                                <p>Some representative placeholder content for the second slide of the carousel.</p>
-                                <p><a class="btn btn-lg btn-primary" href="#">Learn more</a></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <svg aria-hidden="true" class="bd-placeholder-img " height="100%"
-                             preserveAspectRatio="xMidYMid slice" width="100%" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect>
-                        </svg>
-                        <div class="container">
-                            <div class="carousel-caption text-end">
-                                <h1>One more for good measure.</h1>
-                                <p>Some representative placeholder content for the third slide of this carousel.</p>
-                                <p><a class="btn btn-lg btn-primary" href="#">Browse gallery</a></p>
-                            </div>
-                        </div>
-                    </div>
-                </div> <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span> <span class="visually-hidden">Previous</span>
-                </button> <button class="carousel-control-next" type="button"
-                                  data-bs-target="#myCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon"
-                          aria-hidden="true"></span> <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-          
-            <div class="container marketing">
-                <div class="row">
-                    <div class="col-lg-4">
-                        <svg aria-label="Placeholder" class="bd-placeholder-img rounded-circle" height="140"
-                             preserveAspectRatio="xMidYMid slice" role="img" width="140" xmlns="http://www.w3.org/2000/svg">@*heading kısmının boutu*@
-                            <title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect>
-                        </svg>
-                        <h2 class="fw-normal">Heading</h2>
-                        <p>
-                            Some representative placeholder content for the three columns of text below the carousel. This is the
-                            first column.
-                        </p>
-                        <p><a class="btn btn-secondary" href="#">View details »</a></p>
-                    </div><!-- /.col-lg-4 -->
-                    <div class="col-lg-4">
-                        <svg aria-label="Placeholder" class="bd-placeholder-img rounded-circle" height="140"
-                             preserveAspectRatio="xMidYMid slice" role="img" width="140" xmlns="http://www.w3.org/2000/svg">
-                            <title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect>
-                        </svg>
-                        <h2 class="fw-normal">Heading</h2>
-                        <p>
-                            Another exciting bit of representative placeholder content. This time, we've moved on to the second
-                            column.
-                        </p>
-                        <p><a class="btn btn-secondary" href="#">View details »</a></p>
-                    </div><!-- /.col-lg-4 -->
-                    <div class="col-lg-4">
-                        <svg aria-label="Placeholder" class="bd-placeholder-img rounded-circle" height="140"
-                             preserveAspectRatio="xMidYMid slice" role="img" width="140" xmlns="http://www.w3.org/2000/svg">
-                            <title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect>
-                        </svg>
-                        <h2 class="fw-normal">Heading</h2>
-                        <p>And lastly this, the third column of representative placeholder content.</p>
-                        <p><a class="btn btn-secondary" href="#">View details »</a></p>
-                    </div><!-- /.col-lg-4 -->
-                </div><!-- /.row --> <!-- START THE FEATURETTES -->
-                <hr class="featurette-divider">
-                <div class="row featurette">
-                    <div class="col-md-7">
-                        <h2 class="featurette-heading fw-normal lh-1">
-                            First featurette heading. <span class="text-body-secondary">It’ll blow your mind.</span>
-                        </h2>
-                        <p class="lead">
-                            Some great placeholder content for the first featurette here. Imagine some exciting
-                            prose here.
-                        </p>
-                    </div>
-                    <div class="col-md-5">
-                        <svg aria-label="Placeholder: 500x500"
-                             class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" height="500"
-                             preserveAspectRatio="xMidYMid slice" role="img" width="500" xmlns="http://www.w3.org/2000/svg">
-                            <title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="var(--bs-secondary-bg)"></rect>
-                            <text x="50%" y="50%"
-                                  fill="var(--bs-secondary-color)" dy=".3em">500x500</text>
-                        </svg>
+                    <p class="hero-desc">@featured.Description</p>
+                    <div class="hero-buttons">
+                        <a href="/Movie/Details/@featured.Id" class="btn btn-primary btn-lg me-2">
+                            <i class="bi bi-play-fill me-2"></i>İzle
+                        </a>
+                        <button class="btn btn-outline-light btn-lg" onclick="showToast('Daha fazla bilgi yakında!', 'info')">
+                            <i class="bi bi-info-circle me-2"></i>Daha Fazla Bilgi
+                        </button>
                     </div>
                 </div>
-                <hr class="featurette-divider">
-                <div class="row featurette">
-                    <div class="col-md-7 order-md-2">
-                        <h2 class="featurette-heading fw-normal lh-1">
-                            Oh yeah, it’s that good. <span class="text-body-secondary">See for yourself.</span>
-                        </h2>
-                        <p class="lead">
-                            Another featurette? Of course. More placeholder content here to give you an idea of how
-                            this layout would work with some actual real-world content in place.
-                        </p>
-                    </div>
-                    <div class="col-md-5 order-md-1">
-                        <svg aria-label="Placeholder: 500x500"
-                             class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" height="500"
-                             preserveAspectRatio="xMidYMid slice" role="img" width="500" xmlns="http://www.w3.org/2000/svg">
-                            <title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="var(--bs-secondary-bg)"></rect>
-                            <text x="50%" y="50%"
-                                  fill="var(--bs-secondary-color)" dy=".3em">500x500</text>
-                        </svg>
-                    </div>
-                </div>
-                <hr class="featurette-divider">
-                <div class="row featurette">
-                    <div class="col-md-7">
-                        <h2 class="featurette-heading fw-normal lh-1">
-                            And lastly, this one. <span class="text-body-secondary">Checkmate.</span>
-                        </h2>
-                        <p class="lead">
-                            And yes, this is the last block of representative placeholder content. Again, not really
-                            intended to be actually read, simply here to give you a better view of what this would look like
-                            with some actual content. Your content.
-                        </p>
-                    </div>
-                    <div class="col-md-5">
-                        <svg aria-label="Placeholder: 500x500"
-                             class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" height="500"
-                             preserveAspectRatio="xMidYMid slice" role="img" width="500" xmlns="http://www.w3.org/2000/svg">
-                            <title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="var(--bs-secondary-bg)"></rect>
-                            <text x="50%" y="50%"
-                                  fill="var(--bs-secondary-color)" dy=".3em">500x500</text>
-                        </svg>
-                    </div>
-                </div>
-                <hr class="featurette-divider"> 
-            </div>
-
-            <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-body-tertiary">
-                <div class="col-md-6 p-lg-5 mx-auto my-5">
-                    <h1 class="display-3 fw-bold">Designed by Drajeen</h1>
-                    <h3 class="fw-normal text-muted mb-3">İZZZLE</h3>
-                    <p>
-                        <a href="Series" class="btn btn-primary my-2">Dizi izle</a> <a href="Movie"
-                                                                                       class="btn btn-secondary my-2">Film izle</a>
-                    </p>
-                    <div class="d-flex gap-3 justify-content-center lead fw-normal">
-                </div>
-            </div>
-            <div class="product-device shadow-sm d-none d-md-block"></div>
-            <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
-        </div>
-      
-
-
-        </main>
-
-
-
-
-
-    </main>
-    <footer class="container py-5">
-        <div class="row">
-            <div class="col-12 col-md">
-                
-                <small class="d-block mb-3 text-body-secondary">&copy;2017–2025</small>
-            </div>
-            <div class="col-6 col-md">
-                <h5>Features</h5>
-                <ul class="list-unstyled text-small">
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Cool stuff</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Random feature</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Team feature</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Stuff for developers</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Another one</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Last time</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <h5>Resources</h5>
-                <ul class="list-unstyled text-small">
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Resource name</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Resource</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Another resource</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Final resource</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <h5>Resources</h5>
-                <ul class="list-unstyled text-small">
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Business</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Education</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Government</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Gaming</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <h5>About</h5>
-                <ul class="list-unstyled text-small">
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Team</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Locations</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Privacy</a>
-                    </li>
-                    <li>
-                        <a class="link-secondary text-decoration-none" href="#">Terms</a>
-                    </li>
-                </ul>
             </div>
         </div>
-    </footer>
-    <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" class="astro-vvvwv3sm"></script>
-</body>
-</html>
+    }
+</div>
+
+<div class="container-fluid px-4 py-5">
+    <!-- Arama ve Kategori Filtresi -->
+    <div class="row mb-4 align-items-center sticky-top bg-blur py-2" style="z-index: 1000;">
+        <div class="col-md-6 mb-2 mb-md-0">
+            <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchInput" class="form-control" placeholder="Film, dizi veya kategori ara...">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="category-scroll">
+                <div class="btn-group category-filter" role="group">
+                    <button type="button" class="btn btn-outline-light active" data-category="all">Tümü</button>
+                    @foreach (var category in Model.Categories ?? new List<Category>())
+                    {
+                        <button type="button" class="btn btn-outline-light" data-category="@category.Name">@category.Name</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Öne Çıkanlar -->
+    <div class="content-row mb-5">
+        <h2 class="row-title">Öne Çıkanlar</h2>
+        <div class="row-slider">
+            @foreach (var movie in Model.FeaturedMovies?.Skip(1) ?? new List<Movie>())
+            {
+                <div class="row-item featured-item" data-title="@movie.Title" data-category="@movie.Category?.Name">
+                    <div class="content-card">
+                        <img src="@(string.IsNullOrEmpty(movie.ImageUrl) ? "https://via.placeholder.com/300x450" : movie.ImageUrl)" alt="@movie.Title">
+                        <div class="card-overlay">
+                            <div class="overlay-content">
+                                <h3>@movie.Title</h3>
+                                <div class="meta">
+                                    <span class="badge bg-warning text-dark"><i class="bi bi-star-fill"></i> @movie.Rating</span>
+                                    <span>@movie.ReleaseDate?.Year</span>
+                                </div>
+                                <p>@movie.Description</p>
+                                <a href="/Movie/Details/@movie.Id" class="btn btn-primary btn-sm">İzle</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Popüler Diziler -->
+    <div class="content-row mb-5">
+        <h2 class="row-title">Popüler Diziler</h2>
+        <div class="row-slider">
+            @foreach (var series in Model.SeriesList?.Take(10) ?? new List<Series>())
+            {
+                <div class="row-item series-item" data-title="@series.Title" data-category="@series.Category?.Name">
+                    <div class="content-card">
+                        <img src="@(string.IsNullOrEmpty(series.ImageUrl) ? "https://via.placeholder.com/300x450" : series.ImageUrl)" alt="@series.Title">
+                        <div class="card-overlay">
+                            <div class="overlay-content">
+                                <h3>@series.Title</h3>
+                                <div class="meta">
+                                    <span class="badge bg-info">@series.GenreName</span>
+                                    <span>@series.ReleaseDate?.Year</span>
+                                </div>
+                                <p>@series.Description</p>
+                                <a href="/Series/Details/@series.Id" class="btn btn-primary btn-sm">İzle</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Yeni Eklenen Filmler -->
+    <div class="content-row mb-5">
+        <h2 class="row-title">Yeni Eklenen Filmler</h2>
+        <div class="row-slider">
+            @foreach (var movie in Model.RecentMovies?.Take(10) ?? new List<Movie>())
+            {
+                <div class="row-item movie-item" data-title="@movie.Title" data-category="@movie.Category?.Name">
+                    <div class="content-card">
+                        <img src="@(string.IsNullOrEmpty(movie.ImageUrl) ? "https://via.placeholder.com/300x450" : movie.ImageUrl)" alt="@movie.Title">
+                        <div class="card-overlay">
+                            <div class="overlay-content">
+                                <h3>@movie.Title</h3>
+                                <div class="meta">
+                                    <span class="badge bg-warning text-dark"><i class="bi bi-star-fill"></i> @movie.Rating</span>
+                                    <span>@movie.ReleaseDate?.Year</span>
+                                </div>
+                                <p>@movie.Description</p>
+                                <a href="/Movie/Details/@movie.Id" class="btn btn-primary btn-sm">İzle</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Montserrat:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Poppins', 'Montserrat', Arial, sans-serif;
+            background: var(--bg-main, #181818);
+            color: var(--text-main, #fff);
+            transition: background 0.3s, color 0.3s;
+        }
+        .theme-toggle-container {
+            position: fixed;
+            top: 1rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-main, #fff);
+        }
+        .slider-wrapper {
+            display: flex;
+            overflow-x: auto;
+            gap: 2rem;
+            scroll-snap-type: x mandatory;
+        }
+        .slider-card {
+            min-width: 400px;
+            max-width: 600px;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            scroll-snap-align: start;
+            background: #222;
+        }
+        .slider-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        .slider-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(24,24,24,0.95) 80%, rgba(24,24,24,0.1) 100%);
+            color: #fff;
+            padding: 1.5rem;
+        }
+        .slider-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .slider-desc {
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 0.5rem;
+        }
+        .show-card {
+            background: #23272f;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .show-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .show-card .card-img-top {
+            height: 300px;
+            object-fit: cover;
+        }
+        .show-card .card-title {
+            color: var(--text-main, #fff);
+            font-weight: 600;
+        }
+        .show-card .badge {
+            margin-bottom: 0.5rem;
+        }
+        /* Light mode */
+        body.light-mode {
+            --bg-main: #f8f9fa;
+            --text-main: #222;
+            background: var(--bg-main);
+            color: var(--text-main);
+        }
+        body.light-mode .show-card {
+            background: #fff;
+            color: #222;
+        }
+        body.light-mode .slider-card {
+            background: #f1f3f6;
+        }
+        body.light-mode .slider-info {
+            background: linear-gradient(to top, rgba(255,255,255,0.95) 80%, rgba(255,255,255,0.1) 100%);
+            color: #222;
+        }
+        body.light-mode .section-title {
+            color: #222;
+        }
+        .category-filter .btn.active {
+            background: #0d6efd;
+            color: #fff;
+            border-color: #0d6efd;
+        }
+        .category-filter .btn {
+            margin-left: 0.25rem;
+            margin-right: 0.25rem;
+        }
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            height: 80vh;
+            min-height: 600px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            border-radius: 24px;
+        }
+        
+        .hero-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            border-radius: 24px;
+        }
+        
+        .hero-info {
+            max-width: 600px;
+            padding: 2rem;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .hero-meta {
+            margin-bottom: 1rem;
+        }
+        
+        .hero-desc {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        /* Search Box */
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        
+        .search-box input {
+            padding-left: 2.5rem;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+        }
+        
+        .search-box input:focus {
+            background: rgba(255,255,255,0.15);
+            box-shadow: none;
+        }
+        
+        /* Category Scroll */
+        .category-scroll {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 0.5rem 0;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .category-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .category-filter .btn {
+            border-radius: 18px;
+            margin: 0 0.25rem;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            font-family: 'Poppins', 'Inter', Arial, sans-serif;
+        }
+        
+        /* Content Rows */
+        .content-row {
+            position: relative;
+            margin: 2rem 0;
+        }
+        
+        .row-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .row-slider {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 1rem 0.5rem;
+            scroll-snap-type: x mandatory;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .row-slider::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .row-item {
+            flex: 0 0 auto;
+            width: 200px;
+            scroll-snap-align: start;
+        }
+        
+        /* Content Cards */
+        .content-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 2/3;
+            background: rgba(34, 34, 44, 0.85);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            transition: transform 0.25s cubic-bezier(.4,2,.6,1), box-shadow 0.25s;
+        }
+        
+        .content-card:hover {
+            transform: scale(1.06) translateY(-6px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+        }
+        
+        .content-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            padding: 1rem;
+            border-radius: 0 0 16px 16px;
+        }
+        
+        .content-card:hover .card-overlay {
+            opacity: 1;
+        }
+        
+        .overlay-content {
+            color: #fff;
+        }
+        
+        .overlay-content h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .overlay-content .meta {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .overlay-content p {
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-desc {
+                font-size: 1rem;
+            }
+            
+            .row-item {
+                width: 160px;
+            }
+            .row-title { font-size: 1.2rem; }
+            .content-card { border-radius: 10px; }
+            .hero-section, .hero-content { border-radius: 12px; }
+        }
+        
+        @@media (max-width: 576px) {
+            .hero-section {
+                height: 60vh;
+                min-height: 400px;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-buttons .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .row-item {
+                width: 140px;
+            }
+        }
+        
+        /* Light Mode */
+        body.light-mode .search-box input {
+            background: rgba(0,0,0,0.05);
+            color: #333;
+        }
+        
+        body.light-mode .search-box input:focus {
+            background: rgba(0,0,0,0.1);
+        }
+        
+        body.light-mode .category-filter .btn-outline-light {
+            color: #333;
+            border-color: #333;
+        }
+        
+        body.light-mode .category-filter .btn-outline-light:hover,
+        body.light-mode .category-filter .btn-outline-light.active {
+            background: #333;
+            color: #fff;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Tema geçişi
+        function setTheme(mode) {
+            if (mode === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('theme-icon').className = 'bi bi-sun';
+            } else {
+                document.body.classList.remove('light-mode');
+                document.getElementById('theme-icon').className = 'bi bi-moon';
+            }
+            localStorage.setItem('theme', mode);
+        }
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            const isLight = document.body.classList.toggle('light-mode');
+            setTheme(isLight ? 'light' : 'dark');
+        });
+        window.addEventListener('DOMContentLoaded', function() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            setTheme(theme);
+        });
+
+        // Arama ve kategori filtreleme
+        function filterContent() {
+            var search = document.getElementById('searchInput').value.toLowerCase();
+            var activeCategory = document.querySelector('.category-filter .btn.active').getAttribute('data-category');
+            // Filmler
+            document.querySelectorAll('.movie-item').forEach(function(item) {
+                var title = item.getAttribute('data-title').toLowerCase();
+                var category = (item.getAttribute('data-category') || '').toLowerCase();
+                var show = (activeCategory === 'all' || category === activeCategory.toLowerCase()) && title.includes(search);
+                item.style.display = show ? '' : 'none';
+            });
+            // Diziler
+            document.querySelectorAll('.series-item').forEach(function(item) {
+                var title = item.getAttribute('data-title').toLowerCase();
+                var category = (item.getAttribute('data-category') || '').toLowerCase();
+                var show = (activeCategory === 'all' || category === activeCategory.toLowerCase()) && title.includes(search);
+                item.style.display = show ? '' : 'none';
+            });
+            // Öne çıkanlar
+            document.querySelectorAll('.featured-item').forEach(function(item) {
+                var title = item.getAttribute('data-title').toLowerCase();
+                var category = (item.getAttribute('data-category') || '').toLowerCase();
+                var show = (activeCategory === 'all' || category === activeCategory.toLowerCase()) && title.includes(search);
+                item.style.display = show ? '' : 'none';
+            });
+        }
+        document.getElementById('searchInput').addEventListener('input', filterContent);
+        document.querySelectorAll('.category-filter .btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.category-filter .btn').forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                filterContent();
+            });
+        });
+
+        // Yatay kaydırma için ok tuşları desteği
+        document.querySelectorAll('.row-slider').forEach(slider => {
+            slider.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    slider.scrollBy({ left: -200, behavior: 'smooth' });
+                } else if (e.key === 'ArrowRight') {
+                    slider.scrollBy({ left: 200, behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Sticky header için scroll olayı
+        window.addEventListener('scroll', () => {
+            const stickyHeader = document.querySelector('.sticky-top');
+            if (window.scrollY > 100) {
+                stickyHeader.classList.add('scrolled');
+            } else {
+                stickyHeader.classList.remove('scrolled');
+            }
+        });
+    </script>
+}

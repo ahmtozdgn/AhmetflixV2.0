@@ -1,0 +1,217 @@
+@model Ahmetflix.Models.Category
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="category-details position-relative">
+    <!-- Backdrop Image -->
+    <div class="backdrop-image" style="background-image: url('@(string.IsNullOrEmpty(Model.ImageUrl) ? "https://via.placeholder.com/1920x1080" : Model.ImageUrl)');">
+        <div class="backdrop-overlay"></div>
+    </div>
+
+    <div class="container position-relative">
+        <div class="row py-5">
+            <!-- Category Info -->
+            <div class="col-12">
+                <div class="card border-0 shadow bg-dark bg-opacity-75">
+                    <div class="card-body">
+                        <h1 class="display-5 fw-bold mb-3">@Model.Name</h1>
+                        <p class="lead mb-4">@Model.Description</p>
+                        <div class="d-flex gap-3">
+                            <span class="badge bg-primary">
+                                <i class="bi bi-film"></i> @(Model.Movies?.Count ?? 0) Film
+                            </span>
+                            <span class="badge bg-primary">
+                                <i class="bi bi-tv"></i> @(Model.Series?.Count ?? 0) Dizi
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Movies Section -->
+        @if (Model.Movies != null && Model.Movies.Any())
+        {
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h2 class="h3 mb-4">Filmler</h2>
+                    <div class="row g-4">
+                        @foreach (var movie in Model.Movies)
+                        {
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="position-relative">
+                                        <img src="@(string.IsNullOrEmpty(movie.ImageUrl) ? "https://via.placeholder.com/300x450" : movie.ImageUrl)" 
+                                             class="card-img-top" alt="@movie.Title"
+                                             style="height: 400px; object-fit: cover;">
+                                        <div class="position-absolute top-0 end-0 m-2">
+                                            <span class="badge bg-dark bg-opacity-75 text-warning">
+                                                <i class="bi bi-star-fill"></i> @movie.Rating
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title text-truncate">@movie.Title</h5>
+                                        <p class="card-text small text-muted text-truncate">@movie.Description</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">@movie.ReleaseDate?.Year</small>
+                                            <div class="btn-group">
+                                                <a href="/Movie/Details/@movie.Id" class="btn btn-sm btn-primary">
+                                                    <i class="bi bi-play-fill"></i> İzle
+                                                </a>
+                                                <button class="btn btn-sm btn-outline-primary favorite-btn" data-movie-id="@movie.Id">
+                                                    <i class="bi bi-heart"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Series Section -->
+        @if (Model.Series != null && Model.Series.Any())
+        {
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="h3 mb-4">Diziler</h2>
+                    <div class="row g-4">
+                        @foreach (var series in Model.Series)
+                        {
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="position-relative">
+                                        <img src="@(string.IsNullOrEmpty(series.ImageUrl) ? "https://via.placeholder.com/300x450" : series.ImageUrl)" 
+                                             class="card-img-top" alt="@series.Title"
+                                             style="height: 400px; object-fit: cover;">
+                                        <div class="position-absolute top-0 end-0 m-2">
+                                            <span class="badge bg-dark bg-opacity-75 text-warning">
+                                                <i class="bi bi-star-fill"></i> @series.Rating
+                                            </span>
+                                        </div>
+                                        @if (series.IsNew)
+                                        {
+                                            <div class="position-absolute top-0 start-0 m-2">
+                                                <span class="badge bg-danger">Yeni</span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title text-truncate">@series.Title</h5>
+                                        <p class="card-text small text-muted text-truncate">@series.Description</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">@series.ReleaseDate?.Year</small>
+                                            <div class="btn-group">
+                                                <a href="/Series/Details/@series.Id" class="btn btn-sm btn-primary">
+                                                    <i class="bi bi-play-fill"></i> İzle
+                                                </a>
+                                                <button class="btn btn-sm btn-outline-primary favorite-btn" data-series-id="@series.Id">
+                                                    <i class="bi bi-heart"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .category-details {
+            min-height: 100vh;
+            background: #181818;
+        }
+        
+        .backdrop-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50vh;
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+        
+        .backdrop-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(24,24,24,1) 100%);
+        }
+        
+        .card {
+            background: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .card-body {
+            color: #fff;
+        }
+        
+        .card-title {
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .badge {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+        
+        .btn-outline-primary {
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+        
+        .btn-outline-primary:hover {
+            background: #0d6efd;
+            color: #fff;
+        }
+        
+        .favorite-btn.active {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .favorite-btn.active i {
+            fill: #dc3545;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.favorite-btn').click(function() {
+                var btn = $(this);
+                var movieId = btn.data('movie-id');
+                var seriesId = btn.data('series-id');
+                
+                $.post('/Favorite/ToggleFavorite', { 
+                    movieId: movieId,
+                    seriesId: seriesId
+                }, function(response) {
+                    if (response.success) {
+                        btn.toggleClass('active');
+                    }
+                });
+            });
+        });
+    </script>
+} 

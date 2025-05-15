@@ -4,9 +4,9 @@ namespace Ahmetflix.Models
 {
     public class IMDB
     {
-
         [Key]
         public int Id { get; set; }
+
         public string? Title { get; set; }
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }
@@ -17,5 +17,9 @@ namespace Ahmetflix.Models
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
         public List<AppUser> AppUsers { get; set; } = new List<AppUser>();
+        public Series? Series { get; set; }
+        public int? SeriesId { get; set; }
+        public Movie? Movie { get; set; }
+        public int? MovieId { get; set; }
     }
 }

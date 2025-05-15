@@ -1,6 +1,305 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Ahmetflix.Models.Series>
 @{
+    ViewData["Title"] = "Diziler";
 }
-<h1>Series Here</h1>
+
+<div class="series-page">
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+        <div class="container">
+            <h1 class="hero-title">Diziler</h1>
+            <p class="hero-subtitle">En yeni ve popüler dizileri keşfedin</p>
+        </div>
+    </div>
+
+    <div class="container-fluid px-4 py-5">
+        <!-- Filtreler ve Arama -->
+        <div class="filters-section mb-4">
+            <div class="row g-3">
+                <!-- Arama -->
+                <div class="col-md-4">
+                    <div class="search-box">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Dizi ara...">
+                    </div>
+                </div>
+                
+                <!-- Kategori Filtresi -->
+                <div class="col-md-3">
+                    <select class="form-select" id="categoryFilter">
+                        <option value="">Tüm Kategoriler</option>
+                        @foreach (var category in ViewBag.Categories as List<Category> ?? new List<Category>())
+                        {
+                            <option value="@category.Name">@category.Name</option>
+                        }
+                    </select>
+                </div>
+                
+                <!-- Yıl Filtresi -->
+                <div class="col-md-3">
+                    <select class="form-select" id="yearFilter">
+                        <option value="">Tüm Yıllar</option>
+                        @{
+                            var years = (Model?.Select(s => s.ReleaseDate?.Year).Distinct().OrderByDescending(y => y).ToList()) ?? new List<int?>();
+                            foreach (var year in years)
+                            {
+                                if (year.HasValue)
+                                {
+                                    <option value="@year">@year</option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                
+                <!-- Sıralama -->
+                <div class="col-md-2">
+                    <select class="form-select" id="sortFilter">
+                        <option value="newest">En Yeni</option>
+                        <option value="oldest">En Eski</option>
+                        <option value="rating">Puana Göre</option>
+                        <option value="name">İsme Göre</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid/List View Toggle -->
+        <div class="view-options mb-4">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-light active" data-view="grid">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                </button>
+                <button type="button" class="btn btn-outline-light" data-view="list">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Diziler Grid -->
+        <div class="series-grid" id="seriesContainer">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var series in Model)
+                {
+                    <div class="series-card" 
+                         data-title="@series.Title"
+                         data-category="@series.Category?.Name"
+                         data-year="@series.ReleaseDate?.Year"
+                         data-rating="@series.Rating">
+                        <div class="card-image">
+                            <img src="@(string.IsNullOrEmpty(series.ImageUrl) ? "https://via.placeholder.com/400x225" : series.ImageUrl)" 
+                                 alt="@series.Title">
+                            @if (series.IsNew)
+                            {
+                                <span class="badge new-badge">Yeni</span>
+                            }
+                            <div class="card-overlay">
+                                <div class="overlay-content">
+                                    <div class="rating">
+                                        <i class="bi bi-star-fill"></i>
+                                        <span>@series.Rating</span>
+                                    </div>
+                                    <p class="description">@series.Description</p>
+                                    <div class="actions">
+                                        <a href="/Series/Details/@series.Id" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-play-fill"></i> İzle
+                                        </a>
+                                        <button class="btn btn-outline-light btn-sm" onclick="showToast('Daha fazla bilgi yakında!', 'info')">
+                                            <i class="bi bi-info-circle"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-info">
+                            <h3 class="title">@series.Title</h3>
+                            <div class="meta">
+                                <span class="year">@series.ReleaseDate?.Year</span>
+                                <span class="category">@series.Category?.Name</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="no-content">
+                    <i class="bi bi-film"></i>
+                    <h3>Henüz dizi eklenmemiş</h3>
+                    <p>Yakında yeni diziler eklenecek!</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Montserrat:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Poppins', 'Montserrat', Arial, sans-serif;
+        }
+        .hero-banner, .filters-section, .series-card, .series-grid, .view-options {
+            font-family: 'Inter', 'Poppins', 'Montserrat', Arial, sans-serif;
+        }
+        .hero-banner {
+            background: linear-gradient(to right, #1a1a1a, #2a2a2a);
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+        }
+        .filters-section {
+            background: rgba(30,30,40,0.6);
+            padding: 1.5rem;
+            border-radius: 18px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+        }
+        .search-box input, .form-select {
+            border-radius: 12px;
+            font-family: 'Poppins', 'Inter', Arial, sans-serif;
+        }
+        .view-options .btn {
+            border-radius: 12px;
+            font-weight: 600;
+            font-family: 'Poppins', 'Inter', Arial, sans-serif;
+        }
+        .series-card {
+            background: rgba(34, 34, 44, 0.85);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            transition: transform 0.25s cubic-bezier(.4,2,.6,1), box-shadow 0.25s;
+        }
+        .series-card:hover {
+            transform: scale(1.06) translateY(-6px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+        }
+        .card-image img {
+            border-radius: 16px 16px 0 0;
+        }
+        .card-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
+            border-radius: 0 0 16px 16px;
+        }
+        .btn-primary, .btn-outline-light {
+            font-family: 'Poppins', 'Inter', Arial, sans-serif;
+            font-weight: 600;
+            border-radius: 14px;
+            padding: 0.5rem 1.2rem;
+            font-size: 1rem;
+            box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary:hover, .btn-outline-light:hover {
+            box-shadow: 0 4px 16px rgba(13,110,253,0.18);
+        }
+        .new-badge {
+            font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .no-content {
+            font-family: 'Poppins', 'Inter', Arial, sans-serif;
+        }
+        /* Responsive tweaks */
+        @@media (max-width: 768px) {
+            .hero-title { font-size: 2rem; }
+            .series-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+            .series-card { border-radius: 10px; }
+            .hero-banner { border-radius: 12px; }
+        }
+        @@media (max-width: 576px) {
+            .hero-banner { padding: 2rem 0; border-radius: 8px; }
+            .series-card { border-radius: 8px; }
+        }
+        /* Light Mode */
+        body.light-mode .hero-banner {
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+        }
+        body.light-mode .filters-section {
+            background: rgba(0,0,0,0.05);
+        }
+        body.light-mode .series-card {
+            background: #fff;
+        }
+        body.light-mode .title {
+            color: #333;
+        }
+        body.light-mode .meta {
+            color: #666;
+        }
+        body.light-mode .no-content {
+            color: #999;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Arama ve filtreleme
+        function filterSeries() {
+            const search = $('#searchInput').val().toLowerCase();
+            const category = $('#categoryFilter').val().toLowerCase();
+            const year = $('#yearFilter').val();
+            const sort = $('#sortFilter').val();
+            
+            let items = $('.series-card').toArray();
+            
+            // Filtreleme
+            items = items.filter(item => {
+                const $item = $(item);
+                const title = $item.data('title').toLowerCase();
+                const itemCategory = ($item.data('category') || '').toLowerCase();
+                const itemYear = $item.data('year');
+                const itemRating = $item.data('rating');
+                
+                const matchesSearch = title.includes(search);
+                const matchesCategory = !category || itemCategory === category;
+                const matchesYear = !year || itemYear == year;
+                
+                return matchesSearch && matchesCategory && matchesYear;
+            });
+            
+            // Sıralama
+            items.sort((a, b) => {
+                const $a = $(a);
+                const $b = $(b);
+                
+                switch(sort) {
+                    case 'newest':
+                        return $b.data('year') - $a.data('year');
+                    case 'oldest':
+                        return $a.data('year') - $b.data('year');
+                    case 'rating':
+                        return $b.data('rating') - $a.data('rating');
+                    case 'name':
+                        return $a.data('title').localeCompare($b.data('title'));
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Görünümü güncelle
+            $('#seriesContainer').empty().append(items);
+        }
+        
+        // Event listeners
+        $('#searchInput, #categoryFilter, #yearFilter, #sortFilter').on('change keyup', filterSeries);
+        
+        // Grid/List view toggle
+        $('.view-options .btn').click(function() {
+            const view = $(this).data('view');
+            $('.view-options .btn').removeClass('active');
+            $(this).addClass('active');
+            $('#seriesContainer').toggleClass('list-view', view === 'list');
+        });
+        
+        // Sayfa yüklendiğinde filtreleme
+        $(document).ready(filterSeries);
+    </script>
+}

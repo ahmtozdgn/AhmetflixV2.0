@@ -1,5 +1,8 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+<!DOCTYPE html>
+<html lang="tr" data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,32 +10,282 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Ahmetflix.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --bs-body-bg: #181818;
+            --bs-body-color: #fff;
+        }
+        
+        body { 
+            background: var(--bs-body-bg); 
+            color: var(--bs-body-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar { 
+            background: var(--bs-body-bg) !important; 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); 
+            transition: background 0.3s;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .navbar-brand i {
+            font-size: 1.8rem;
+            color: var(--bs-primary);
+        }
+        
+        .nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link.active {
+            background: var(--bs-primary);
+            color: #fff !important;
+        }
+        
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+        
+        .dropdown-menu { 
+            background: #222; 
+            color: #fff; 
+            border-radius: 10px; 
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: fadeInDown 0.3s;
+        }
+        
+        @@keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .dropdown-item { 
+            color: #fff; 
+            border-radius: 6px; 
+            transition: background 0.2s, color 0.2s;
+        }
+        
+        .dropdown-item:hover { 
+            background: #0d6efd; 
+            color: #fff; 
+        }
+        
+        .navbar .bi-person-circle { 
+            font-size: 1.5rem; 
+            margin-right: 6px; 
+        }
+        
+        .footer { 
+            background: var(--bs-body-bg); 
+            color: #bbb; 
+            border-top: 1px solid #222; 
+            padding: 2rem 0 1rem 0;
+            margin-top: auto;
+        }
+        
+        .footer a { 
+            color: #bbb; 
+            text-decoration: none; 
+            transition: color 0.2s; 
+        }
+        
+        .footer a:hover { 
+            color: #fff; 
+            text-decoration: underline; 
+        }
+        
+        .card {
+            background: #1a1a1a;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transform: translateY(-4px) scale(1.02);
+        }
+        
+        .card-header {
+            background: #222;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .form-control, .input-group-text {
+            background: #2a2a2a;
+            border-color: #2a2a2a;
+            color: #fff;
+            transition: background 0.2s, color 0.2s;
+        }
+        
+        .form-control:focus {
+            background: #2a2a2a;
+            border-color: #0d6efd;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.15);
+        }
+        
+        .btn-outline-primary {
+            border-color: #0d6efd;
+            color: #0d6efd;
+            transition: background 0.2s, color 0.2s;
+        }
+        
+        .btn-outline-primary:hover {
+            background: #0d6efd;
+            color: #fff;
+        }
+        
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .navbar-brand { font-size: 1.2rem; }
+            .footer { padding: 1rem 0; }
+            .card .card-img-top { height: 180px !important; }
+        }
+        
+        @@media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .navbar-brand i {
+                font-size: 1.4rem;
+            }
+            
+            .nav-link {
+                padding: 0.5rem;
+            }
+            
+            .nav-link i {
+                margin-right: 0 !important;
+            }
+            
+            .nav-link span {
+                display: none;
+            }
+            
+            .footer { font-size: 0.9rem; }
+            .card .card-img-top { height: 120px !important; }
+        }
+        
+        /* Toast responsive */
+        @@media (max-width: 576px) {
+            .position-fixed.top-0.end-0.p-3 { right: 0.5rem !important; top: 0.5rem !important; min-width: 90vw !important; }
+        }
+        .mobile-tabbar {
+            position: fixed;
+            left: 0; right: 0; bottom: 0;
+            height: 60px;
+            background: rgba(30,30,40,0.95);
+            box-shadow: 0 -2px 16px rgba(0,0,0,0.18);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 3000;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+            backdrop-filter: blur(8px);
+        }
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 6px 0 0 0;
+            transition: color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        .tab-item i {
+            font-size: 1.5rem;
+            margin-bottom: 2px;
+            transition: color 0.2s;
+        }
+        .tab-item.active, .tab-item:active, .tab-item:focus {
+            color: #0d6efd;
+        }
+        .tab-item.active i {
+            color: #0d6efd;
+        }
+        .tab-item span {
+            font-size: 0.8rem;
+            margin-top: 2px;
+        }
+        @@media (min-width: 769px) {
+            .mobile-tabbar { display: none !important; }
+        }
+    </style>
+    @RenderSection("Styles", required: false)
 </head>
 <body>
+    <!-- Toast Container -->
+    <div aria-live="polite" aria-atomic="true" class="position-fixed top-0 end-0 p-3" style="z-index: 2000; min-width: 300px;">
+        <div id="toast-container"></div>
+    </div>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Ahmetflix</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    Ahmetflix
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" 
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door me-1"></i>Home
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Movie" asp-action="Index">
+                                <i class="bi bi-film me-1"></i>Movies
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Movie" asp-action="Index">Movie</a>
+                            <a class="nav-link" asp-area="" asp-controller="Series" asp-action="Index">
+                                <i class="bi bi-collection-play me-1"></i>Series
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Series" asp-action="Index">Series</a>
+                            <a class="nav-link" asp-area="" asp-controller="Category" asp-action="Index">
+                                <i class="bi bi-grid me-1"></i>Categories
+                            </a>
                         </li>
                     </ul>
-                </div>  
+                    <button id="theme-toggle" class="btn btn-outline-secondary ms-2" type="button" title="Tema Değiştir">
+                        <i id="theme-icon" class="bi bi-moon"></i>
+                    </button>
+                    <partial name="_LoginPartial" />
+                </div>
             </div>
         </nav>
     </header>
@@ -44,11 +297,91 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - Ahmetflix - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - Ahmetflix - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    <!-- Mobil Alt Menü (Tab Bar) -->
+    <nav class="mobile-tabbar d-md-none d-lg-none d-xl-none">
+        <a href="/" class="tab-item" id="tab-home">
+            <i class="bi bi-house-door"></i>
+            <span>Ana Sayfa</span>
+        </a>
+        <a href="/Series" class="tab-item" id="tab-series">
+            <i class="bi bi-collection-play"></i>
+            <span>Diziler</span>
+        </a>
+        <a href="#" class="tab-item" id="tab-search" onclick="showToast('Arama yakında!','info');return false;">
+            <i class="bi bi-search"></i>
+            <span>Ara</span>
+        </a>
+        <a href="#" class="tab-item" id="tab-profile" onclick="showToast('Profil yakında!','info');return false;">
+            <i class="bi bi-person"></i>
+            <span>Profil</span>
+        </a>
+    </nav>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        // Toast gösterme fonksiyonu
+        function showToast(message, type = 'success') {
+            var icon = type === 'success' ? 'bi-check-circle-fill' : (type === 'error' ? 'bi-x-circle-fill' : 'bi-info-circle-fill');
+            var bg = type === 'success' ? 'bg-success' : (type === 'error' ? 'bg-danger' : 'bg-info');
+            var toastHtml = `
+                <div class="toast align-items-center text-white ${bg} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3500">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="bi ${icon} me-2"></i> ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>`;
+            var container = document.getElementById('toast-container');
+            container.insertAdjacentHTML('beforeend', toastHtml);
+            var toastEl = container.lastElementChild;
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
+            toastEl.addEventListener('hidden.bs.toast', function () { toastEl.remove(); });
+        }
+        // TempData'dan mesaj varsa göster
+        $(function() {
+            var msg = '@TempData["ToastMessage"]';
+            var type = '@TempData["ToastType"]';
+            if (msg) {
+                showToast(msg, type || 'success');
+            }
+        });
+        // Tema değiştirici
+        function setTheme(mode) {
+            if (mode === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('theme-icon').className = 'bi bi-sun';
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+            } else {
+                document.body.classList.remove('light-mode');
+                document.getElementById('theme-icon').className = 'bi bi-moon';
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+            }
+            localStorage.setItem('theme', mode);
+        }
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            const isLight = document.body.classList.toggle('light-mode');
+            setTheme(isLight ? 'light' : 'dark');
+        });
+        window.addEventListener('DOMContentLoaded', function() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            setTheme(theme);
+        });
+        // Aktif sekmeyi vurgula
+        (function() {
+            var path = window.location.pathname.toLowerCase();
+            if (path === '/' || path.startsWith('/home')) {
+                document.getElementById('tab-home').classList.add('active');
+            } else if (path.startsWith('/series')) {
+                document.getElementById('tab-series').classList.add('active');
+            }
+        })();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
+</body>
 </html>

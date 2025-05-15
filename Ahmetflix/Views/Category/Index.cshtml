@@ -1,0 +1,113 @@
+@model IEnumerable<Ahmetflix.Models.Category>
+@{
+    ViewData["Title"] = "Kategoriler";
+}
+
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-6">
+            <h2 class="mb-0">Kategoriler</h2>
+            <small class="text-muted">En yeni filmler, diziler ve daha fazlası burada.</small>
+        </div>
+        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+            <div class="input-group" style="max-width: 300px; float: right;">
+                <input type="text" id="searchInput" class="form-control" placeholder="Kategori ara...">
+                <button class="btn btn-primary" type="button">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Grid -->
+    <div class="row g-4">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var category in Model)
+            {
+                <div class="col-6 col-md-4 col-lg-3">
+                    <a href="/Category/Details/@category.Id" class="text-decoration-none">
+                        <div class="card h-100 category-card border-0 shadow-sm">
+                            <div class="position-relative">
+                                <img src="@(string.IsNullOrEmpty(category.ImageUrl) ? "https://via.placeholder.com/400x225?text=No+Image" : category.ImageUrl)" 
+                                     class="card-img-top" alt="@category.Name" 
+                                     style="height: 200px; object-fit: cover;">
+                                <div class="position-absolute bottom-0 start-0 end-0 p-3 bg-dark bg-opacity-75">
+                                    <h5 class="card-title text-white mb-0">@category.Name</h5>
+                                </div>
+                            </div>
+                            <div class="card-body bg-dark">
+                                <p class="card-text small text-muted text-truncate">@category.Description</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="bi bi-film"></i> @(category.Movies?.Count ?? 0) Film
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="bi bi-tv"></i> @(category.Series?.Count ?? 0) Dizi
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> Henüz kategori eklenmemiş.
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .category-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;
+        }
+        
+        .category-card .card-img-top {
+            transition: transform 0.3s ease;
+        }
+        
+        .category-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+        
+        .category-card .card-body {
+            background: #1a1a1a;
+            color: #fff;
+        }
+        
+        .category-card .card-title {
+            color: #fff;
+            font-weight: 600;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Search functionality
+            $('#searchInput').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('.category-card').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+} 

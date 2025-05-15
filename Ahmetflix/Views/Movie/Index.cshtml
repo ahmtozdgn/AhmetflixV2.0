@@ -1,8 +1,140 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Ahmetflix.Models.Movie>
 @{
+    ViewData["Title"] = "Filmler";
 }
 
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5 fw-bold">Filmler</h1>
+        <div class="d-flex gap-2">
+            <div class="input-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Film ara...">
+                <button class="btn btn-primary" type="button">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
-<h1> Movies Here</h1>
+    <!-- Movies Grid -->
+    <div class="row g-4">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var movie in Model)
+            {
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="card h-100 movie-card border-0 shadow-sm">
+                        <div class="position-relative">
+                            <img src="@(string.IsNullOrEmpty(movie.ImageUrl) ? "https://via.placeholder.com/400x225?text=No+Image" : movie.ImageUrl)" 
+                                 class="card-img-top" alt="@movie.Title" 
+                                 style="height: 300px; object-fit: cover;">
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="badge bg-dark bg-opacity-75 text-warning">
+                                    <i class="bi bi-star-fill"></i> @movie.Rating
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-truncate">@movie.Title</h5>
+                            <p class="card-text small text-muted text-truncate">@movie.Description</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">@movie.ReleaseDate?.Year</small>
+                                <div class="btn-group">
+                                    <a href="/Movie/Details/@movie.Id" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-play-fill"></i> İzle
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-primary favorite-btn" data-movie-id="@movie.Id">
+                                        <i class="bi bi-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> Henüz film eklenmemiş.
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .movie-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;
+        }
+        
+        .movie-card .card-img-top {
+            transition: transform 0.3s ease;
+        }
+        
+        .movie-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+        
+        .movie-card .card-body {
+            background: #1a1a1a;
+            color: #fff;
+        }
+        
+        .movie-card .card-title {
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .favorite-btn:hover {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .favorite-btn.active {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .favorite-btn.active i {
+            fill: #dc3545;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Search functionality
+            $('#searchInput').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('.movie-card').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+            
+            // Favorite button functionality
+            $('.favorite-btn').click(function() {
+                var btn = $(this);
+                var movieId = btn.data('movie-id');
+                
+                $.post('/Favorite/ToggleFavorite', { movieId: movieId }, function(response) {
+                    if (response.success) {
+                        btn.toggleClass('active');
+                    }
+                });
+            });
+        });
+    </script>
+}
