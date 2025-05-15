@@ -240,6 +240,67 @@
         @@media (min-width: 769px) {
             .mobile-tabbar { display: none !important; }
         }
+        .btn-outline-secondary {
+            border-color: #6c757d;
+            color: #fff;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .btn-outline-secondary:hover {
+            background: #6c757d;
+            color: #fff;
+        }
+        body.light-mode {
+            --bs-body-bg: #f8f9fa;
+            --bs-body-color: #212529;
+        }
+        body.light-mode .navbar,
+        body.light-mode .footer,
+        body.light-mode .card,
+        body.light-mode .dropdown-menu {
+            background: #fff !important;
+            color: #212529;
+        }
+        body.light-mode .nav-link,
+        body.light-mode .dropdown-item {
+            color: #212529;
+        }
+        body.light-mode .nav-link:hover {
+            background: rgba(0,0,0,0.05);
+        }
+        body.light-mode .dropdown-item:hover {
+            background: #f8f9fa;
+            color: #0d6efd;
+        }
+        body.light-mode .form-control,
+        body.light-mode .input-group-text {
+            background: #fff;
+            border-color: #dee2e6;
+            color: #212529;
+        }
+        body.light-mode .form-control:focus {
+            background: #fff;
+            border-color: #0d6efd;
+            color: #212529;
+        }
+        body.light-mode .btn-outline-secondary {
+            border-color: #6c757d;
+            color: #6c757d;
+        }
+        body.light-mode .btn-outline-secondary:hover {
+            background: #6c757d;
+            color: #fff;
+        }
+        body.light-mode .mobile-tabbar {
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 -2px 16px rgba(0,0,0,0.1);
+        }
+        body.light-mode .tab-item {
+            color: #6c757d;
+        }
+        body.light-mode .tab-item.active {
+            color: #0d6efd;
+        }
     </style>
     @RenderSection("Styles", required: false)
 </head>
@@ -324,63 +385,80 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
         // Toast gösterme fonksiyonu
-        function showToast(message, type = 'success') {
-            var icon = type === 'success' ? 'bi-check-circle-fill' : (type === 'error' ? 'bi-x-circle-fill' : 'bi-info-circle-fill');
-            var bg = type === 'success' ? 'bg-success' : (type === 'error' ? 'bg-danger' : 'bg-info');
-            var toastHtml = `
-                <div class="toast align-items-center text-white ${bg} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3500">
-                    <div class="d-flex">
-                        <div class="toast-body">
-                            <i class="bi ${icon} me-2"></i> ${message}
-                        </div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
                     </div>
-                </div>`;
-            var container = document.getElementById('toast-container');
-            container.insertAdjacentHTML('beforeend', toastHtml);
-            var toastEl = container.lastElementChild;
-            var toast = new bootstrap.Toast(toastEl);
-            toast.show();
-            toastEl.addEventListener('hidden.bs.toast', function () { toastEl.remove(); });
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+            bsToast.show();
+            
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
         }
-        // TempData'dan mesaj varsa göster
-        $(function() {
-            var msg = '@TempData["ToastMessage"]';
-            var type = '@TempData["ToastType"]';
-            if (msg) {
-                showToast(msg, type || 'success');
-            }
-        });
-        // Tema değiştirici
-        function setTheme(mode) {
-            if (mode === 'light') {
-                document.body.classList.add('light-mode');
-                document.getElementById('theme-icon').className = 'bi bi-sun';
-                document.documentElement.setAttribute('data-bs-theme', 'light');
+
+        // Tema değiştirme
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const isDark = body.getAttribute('data-bs-theme') === 'dark';
+            
+            if (isDark) {
+                body.setAttribute('data-bs-theme', 'light');
+                body.classList.add('light-mode');
+                themeIcon.classList.remove('bi-moon');
+                themeIcon.classList.add('bi-sun');
+                localStorage.setItem('theme', 'light');
             } else {
-                document.body.classList.remove('light-mode');
-                document.getElementById('theme-icon').className = 'bi bi-moon';
-                document.documentElement.setAttribute('data-bs-theme', 'dark');
+                body.setAttribute('data-bs-theme', 'dark');
+                body.classList.remove('light-mode');
+                themeIcon.classList.remove('bi-sun');
+                themeIcon.classList.add('bi-moon');
+                localStorage.setItem('theme', 'dark');
             }
-            localStorage.setItem('theme', mode);
         }
-        document.getElementById('theme-toggle').addEventListener('click', function() {
-            const isLight = document.body.classList.toggle('light-mode');
-            setTheme(isLight ? 'light' : 'dark');
-        });
-        window.addEventListener('DOMContentLoaded', function() {
-            const theme = localStorage.getItem('theme') || 'dark';
-            setTheme(theme);
-        });
-        // Aktif sekmeyi vurgula
-        (function() {
-            var path = window.location.pathname.toLowerCase();
-            if (path === '/' || path.startsWith('/home')) {
-                document.getElementById('tab-home').classList.add('active');
-            } else if (path.startsWith('/series')) {
-                document.getElementById('tab-series').classList.add('active');
+
+        // Sayfa yüklendiğinde tema kontrolü
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'light') {
+                body.setAttribute('data-bs-theme', 'light');
+                body.classList.add('light-mode');
+                themeIcon.classList.remove('bi-moon');
+                themeIcon.classList.add('bi-sun');
             }
-        })();
+            
+            // Tema değiştirme butonuna tıklama olayı
+            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+            
+            // Mobil tab bar aktif sayfa kontrolü
+            const currentPath = window.location.pathname;
+            const tabItems = document.querySelectorAll('.tab-item');
+            
+            tabItems.forEach(tab => {
+                const href = tab.getAttribute('href');
+                if (href === currentPath || (currentPath.startsWith(href) && href !== '/')) {
+                    tab.classList.add('active');
+                }
+            });
+        });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

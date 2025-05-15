@@ -50,6 +50,21 @@ namespace Ahmetflix.Controllers
                 return NotFound();
             }
 
+            // Benzer diziler (aynı kategoriden)
+            var similarSeries = await _context.Series
+                .Where(s => s.CategoryId == series.CategoryId && s.Id != series.Id)
+                .Take(4)
+                .ToListAsync();
+
+            // İlgili filmler (aynı kategoriden)
+            var relatedMovies = await _context.Movies
+                .Where(m => m.CategoryId == series.CategoryId)
+                .Take(4)
+                .ToListAsync();
+
+            ViewBag.SimilarSeries = similarSeries;
+            ViewBag.RelatedMovies = relatedMovies;
+
             return View(series);
         }
 

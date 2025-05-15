@@ -83,14 +83,22 @@
                         {
                             <div class="col">
                                 <div class="card show-card h-100">
-                                    <img src="@(string.IsNullOrEmpty(movie.ImageUrl) ? "https://via.placeholder.com/300x450" : movie.ImageUrl)" class="card-img-top" alt="@movie.Title">
+                                    <img src="@(string.IsNullOrEmpty(movie.ImageUrl) ? "https://via.placeholder.com/300x450" : movie.ImageUrl)" 
+                                         class="card-img-top" alt="@movie.Title">
                                     <div class="card-body">
                                         <h5 class="card-title">@movie.Title</h5>
-                                        <span class="badge bg-info text-dark">@movie.GenreName</span>
+                                        <div class="d-flex gap-2 mb-2">
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-star-fill"></i> @movie.Rating
+                                            </span>
+                                            <span class="badge bg-info text-dark">@movie.GenreName</span>
+                                        </div>
                                         <p class="card-text small text-muted">@movie.Description</p>
                                     </div>
                                     <div class="card-footer bg-transparent border-0">
-                                        <a href="/Movie/Details/@movie.Id" class="btn btn-outline-primary w-100">İzle</a>
+                                        <a href="/Movie/Details/@movie.Id" class="btn btn-outline-primary w-100">
+                                            <i class="bi bi-play-fill"></i> İzle
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -99,6 +107,49 @@
                     else
                     {
                         <div class="col-12 text-muted">Benzer film bulunamadı.</div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- İlgili Diziler -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">İlgili Diziler</h3>
+                <div class="row row-cols-2 row-cols-md-4 g-4">
+                    @{
+                        var relatedSeries = ViewBag.RelatedSeries as List<Ahmetflix.Models.Series>;
+                        if (relatedSeries != null && relatedSeries.Any())
+                        {
+                            foreach (var series in relatedSeries)
+                            {
+                                <div class="col">
+                                    <div class="card show-card h-100">
+                                        <img src="@(string.IsNullOrEmpty(series.ImageUrl) ? "https://via.placeholder.com/300x450" : series.ImageUrl)" 
+                                             class="card-img-top" alt="@series.Title">
+                                        <div class="card-body">
+                                            <h5 class="card-title">@series.Title</h5>
+                                            <div class="d-flex gap-2 mb-2">
+                                                <span class="badge bg-warning text-dark">
+                                                    <i class="bi bi-star-fill"></i> @series.Rating
+                                                </span>
+                                                <span class="badge bg-info text-dark">@series.Category?.Name</span>
+                                            </div>
+                                            <p class="card-text small text-muted">@series.Description</p>
+                                        </div>
+                                        <div class="card-footer bg-transparent border-0">
+                                            <a href="/Series/Details/@series.Id" class="btn btn-outline-primary w-100">
+                                                <i class="bi bi-play-fill"></i> İzle
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-12 text-muted">İlgili dizi bulunamadı.</div>
+                        }
                     }
                 </div>
             </div>
@@ -146,6 +197,7 @@
         .movie-details {
             min-height: 100vh;
             background: #181818;
+            padding-bottom: 4rem;
         }
         .backdrop-image {
             position: absolute;
@@ -154,6 +206,8 @@
             background-size: cover;
             background-position: center;
             z-index: 0;
+            filter: blur(8px);
+            transform: scale(1.1);
         }
         .backdrop-overlay {
             position: absolute;
@@ -167,7 +221,8 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.10);
-            transition: box-shadow 0.2s, transform 0.2s;
+            transition: all 0.3s cubic-bezier(.4,2,.6,1);
+            overflow: hidden;
         }
         .card:hover, .show-card:hover {
             box-shadow: 0 16px 48px rgba(0,0,0,0.25);
@@ -175,65 +230,130 @@
         }
         .card-body {
             color: #fff;
+            padding: 1.5rem;
         }
         .badge {
             font-size: 0.95rem;
             padding: 0.5rem 1.1rem;
             border-radius: 12px;
             font-family: 'Poppins', 'Inter', Arial, sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
         .btn-primary, .btn-outline-primary {
             font-family: 'Poppins', 'Inter', Arial, sans-serif;
             font-weight: 600;
             border-radius: 14px;
-            padding: 0.6rem 1.5rem;
+            padding: 0.8rem 1.8rem;
             font-size: 1.1rem;
             box-shadow: 0 2px 8px rgba(13,110,253,0.08);
-            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            transition: all 0.3s cubic-bezier(.4,2,.6,1);
+            letter-spacing: 0.5px;
         }
         .btn-primary:hover, .btn-outline-primary:hover {
             box-shadow: 0 4px 16px rgba(13,110,253,0.18);
+            transform: translateY(-2px);
+        }
+        .btn-back {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 12px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-back:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(-4px);
         }
         .show-card .card-img-top {
             height: 260px;
             object-fit: cover;
             border-radius: 18px 18px 0 0;
+            transition: transform 0.3s ease;
+        }
+        .show-card:hover .card-img-top {
+            transform: scale(1.05);
         }
         .show-card .card-title {
             color: #fff;
             font-weight: 700;
             font-size: 1.1rem;
+            margin-bottom: 0.8rem;
         }
-        .show-card .badge {
-            margin-bottom: 0.5rem;
+        .show-card .card-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.7);
         }
-        .movie-details .container {
-            position: relative;
-            z-index: 2;
+        .comment-list {
+            margin-top: 2rem;
         }
-        .movie-details .card {
-            margin-bottom: 1.5rem;
-        }
-        .movie-details .btn-back {
-            position: absolute;
-            top: 2rem;
-            left: 2rem;
-            z-index: 10;
-            font-size: 1.1rem;
+        .comment-list .bg-dark {
             border-radius: 12px;
-            padding: 0.5rem 1.2rem;
-            background: rgba(34,34,44,0.7);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.15);
-            transition: background 0.2s, color 0.2s;
+            transition: transform 0.2s ease;
         }
-        .movie-details .btn-back:hover {
-            background: #0d6efd;
-            color: #fff;
+        .comment-list .bg-dark:hover {
+            transform: translateX(4px);
         }
+        /* Light Mode */
+        body.light-mode .movie-details {
+            background: #f8f9fa;
+        }
+        body.light-mode .card, 
+        body.light-mode .show-card {
+            background: rgba(255,255,255,0.9);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        body.light-mode .card-body,
+        body.light-mode .show-card .card-body {
+            color: #333;
+        }
+        body.light-mode .show-card .card-text {
+            color: #666;
+        }
+        body.light-mode .btn-back {
+            background: rgba(0,0,0,0.1);
+            color: #333;
+        }
+        body.light-mode .btn-back:hover {
+            background: rgba(0,0,0,0.15);
+        }
+        body.light-mode .comment-list .bg-dark {
+            background: rgba(0,0,0,0.05) !important;
+            color: #333;
+        }
+        /* Responsive */
         @@media (max-width: 768px) {
-            .movie-details .btn-back { top: 1rem; left: 1rem; font-size: 1rem; padding: 0.4rem 1rem; }
-            .show-card .card-img-top { height: 180px; }
+            .movie-details {
+                padding-bottom: 2rem;
+            }
+            .card-body {
+                padding: 1.2rem;
+            }
+            .btn-primary, .btn-outline-primary {
+                padding: 0.6rem 1.4rem;
+                font-size: 1rem;
+            }
+            .show-card .card-img-top {
+                height: 200px;
+            }
+        }
+        @@media (max-width: 576px) {
+            .backdrop-image {
+                height: 60vh;
+            }
+            .card-body {
+                padding: 1rem;
+            }
+            .badge {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.8rem;
+            }
+            .show-card .card-img-top {
+                height: 180px;
+            }
         }
     </style>
 }
