@@ -144,16 +144,6 @@ namespace Ahmetflix.Controllers
             return Json(new { success = false, message = "Film eklenirken bir hata oluştu." });
         }
 
-        // Film düzenle (GET)
-        public async Task<IActionResult> EditMovie(int id)
-        {
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie == null) return NotFound();
-            ViewBag.Categories = await _context.Categories.ToListAsync();
-            return View(movie);
-        }
-
-        // Film düzenle (POST)
         [HttpPost]
         public async Task<IActionResult> EditMovie(Movie movie)
         {
@@ -167,7 +157,6 @@ namespace Ahmetflix.Controllers
             return View(movie);
         }
 
-        // Film sil (POST)
         [HttpPost]
         public async Task<IActionResult> DeleteMovie(int id)
         {
@@ -202,16 +191,6 @@ namespace Ahmetflix.Controllers
             return Json(new { success = false, message = "Dizi eklenirken bir hata oluştu." });
         }
 
-        // Dizi düzenle (GET)
-        public async Task<IActionResult> EditSeries(int id)
-        {
-            var series = await _context.Series.FindAsync(id);
-            if (series == null) return NotFound();
-            ViewBag.Categories = await _context.Categories.ToListAsync();
-            return View(series);
-        }
-
-        // Dizi düzenle (POST)
         [HttpPost]
         public async Task<IActionResult> EditSeries(Series series)
         {
@@ -239,7 +218,6 @@ namespace Ahmetflix.Controllers
             return Json(new { success = false, message = "Dizi bulunamadı." });
         }
 
-        // Kullanıcı sil (POST)
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string id)
         {
@@ -254,64 +232,6 @@ namespace Ahmetflix.Controllers
                 return Json(new { success = false, message = "Kullanıcı silinirken bir hata oluştu." });
             }
             return Json(new { success = false, message = "Kullanıcı bulunamadı." });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetContentBySearch(string search = "") // Renamed to avoid conflict
-        {
-            var query = _context.Movies
-                .Include(m => m.Category) // Add Include to prevent null reference
-                .AsQueryable();
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(m => m.Title != null && m.Title.Contains(search, StringComparison.OrdinalIgnoreCase)); // Case insensitive search with null check
-            }
-
-            var content = await query
-                .Select(m => new
-                {
-                    m.Id,
-                    m.Title,
-                    CategoryName = m.Category != null ? m.Category.Name : null,
-                    m.CategoryId,
-                    m.Description
-                })
-                .ToListAsync();
-
-            return Json(content);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetCategories()
-        {
-            var categories = await _context.Categories
-                .Select(c => new { c.Id, c.Name })
-                .ToListAsync();
-
-            return Json(categories);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetContent(int id)
-        {
-            var content = await _context.Movies
-                .Where(m => m.Id == id)
-                .Select(m => new
-                {
-                    m.Id,
-                    m.Title,
-                    m.CategoryId,
-                    m.Description
-                })
-                .FirstOrDefaultAsync();
-
-            if (content == null)
-            {
-                return NotFound();
-            }
-
-            return Json(content);
         }
 
         [HttpPost]
@@ -373,6 +293,58 @@ namespace Ahmetflix.Controllers
             return Json(new { success = true });
         }
 
-        // Film ve dizi CRUD işlemleri için ek metotlar eklenebilir...
+        // Migration işlemi
+        [HttpPost]
+        public IActionResult RunMigration()
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "dotnet",
+                Arguments = "ef migrations add AdminPanelMigration_" + DateTime.Now.ToString("yyyyMMddHHmmss"),
+                WorkingDirectory = _env.ContentRootPath,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = Process.Start(psi);
+            if (process == null)
+            {
+                return Content("Process başlatılamadı.");
+            }
+
+            process.WaitForExit();
+            var output = process.StandardOutput.ReadToEnd();
+            var error = process.StandardError.ReadToEnd();
+            return Content(output + error);
+        }
+
+        // Database update işlemi
+        [HttpPost]
+        public IActionResult UpdateDatabase()
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "dotnet",
+                Arguments = "ef database update",
+                WorkingDirectory = _env.ContentRootPath,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = Process.Start(psi);
+            if (process == null)
+            {
+                return Content("Process başlatılamadı.");
+            }
+
+            process.WaitForExit();
+            var output = process.StandardOutput.ReadToEnd();
+            var error = process.StandardError.ReadToEnd();
+            return Content(output + error);
+        }
     }
 } 

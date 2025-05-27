@@ -283,23 +283,6 @@
                         return 0;
                 }
             });
-            
-            // Görünümü güncelle
-            $('#seriesContainer').empty().append(items);
-        }
-        
-        // Event listeners
-        $('#searchInput, #categoryFilter, #yearFilter, #sortFilter').on('change keyup', filterSeries);
-        
-        // Grid/List view toggle
-        $('.view-options .btn').click(function() {
-            const view = $(this).data('view');
-            $('.view-options .btn').removeClass('active');
-            $(this).addClass('active');
-            $('#seriesContainer').toggleClass('list-view', view === 'list');
         });
-        
-        // Sayfa yüklendiğinde filtreleme
-        $(document).ready(filterSeries);
     </script>
 }
